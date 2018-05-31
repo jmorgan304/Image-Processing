@@ -9,6 +9,12 @@ public class Edge {
 		this.toNode = toNode;
 		this.weight = weight;
 	}
+	
+	public String toString() {
+		String fromString = fromNode.toString();
+		String toString = toNode.toString();
+		return "Edge, From: " + fromString + " To: " + toString + " Weight: " + this.weight;
+	}
 
 	public Node getFromNode() {
 		return fromNode;

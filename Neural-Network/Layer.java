@@ -14,16 +14,24 @@ public class Layer {
 		if(nodes != null) {
 			this.size = nodes.length;
 		}
-		if (inputEdges == null && outputEdges != null) {
-			this.isInputLayer = true;
+	}
+	
+	public String toString() {
+		String inputEdges = "Input Edges:\n";
+		if(! this.isInputLayer) {
+			for(Edge inputEdge : this.inputEdges) {
+				inputEdges += "\t" + inputEdge.toString() + "\n";
+			}
 		}
-		else if (outputEdges == null && inputEdges != null) {
-			this.isOutputLayer = true;
+		
+		String outputEdges = "Output Edges:\n";
+		if(! this.isOutputLayer) {
+			for(Edge outputEdge : this.outputEdges) {
+				outputEdges += "\t" + outputEdge.toString() + "\n";
+			}
 		}
-		else {
-			this.isOutputLayer = false;
-			this.isInputLayer = false;
-		}
+		
+		return inputEdges + outputEdges;
 	}
 
 	public Node[] getNodes() {
@@ -43,9 +51,9 @@ public class Layer {
 
 	public void setInputEdges(Edge[] inputEdges) {
 		this.inputEdges = inputEdges;
-		if (outputEdges == null && this.inputEdges != null) {
-			this.isOutputLayer = true;
-		}
+//		if (outputEdges == null && this.inputEdges != null) {
+//			this.isOutputLayer = true;
+//		}
 	}
 
 	public Edge[] getOutputEdges() {
@@ -54,9 +62,9 @@ public class Layer {
 
 	public void setOutputEdges(Edge[] outputEdges) {
 		this.outputEdges = outputEdges;
-		if (inputEdges == null && this.outputEdges != null) {
-			this.isInputLayer = true;
-		}
+//		if (inputEdges == null && this.outputEdges != null) {
+//			this.isInputLayer = true;
+//		}
 	}
 	
 	public int getSize() {
@@ -69,5 +77,19 @@ public class Layer {
 	
 	public boolean isOutputLayer() {
 		return this.isOutputLayer;
+	}
+	
+	public void setIsInputLayer(boolean value) {
+		this.isInputLayer = value;
+		if(value) {
+			this.inputEdges = null;
+		}
+	}
+	
+	public void setIsOutputLayer(boolean value) {
+		this.isOutputLayer = value;
+		if(value) {
+			this.outputEdges = null;
+		}
 	}
 }

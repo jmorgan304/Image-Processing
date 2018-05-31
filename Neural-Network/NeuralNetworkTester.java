@@ -9,11 +9,11 @@ public class NeuralNetworkTester {
 	public void testCreation() {
 		int[] layerSizes = { 784, 16, 16, 10 };
 		
-		NeuralNetwork nn = new NeuralNetwork(layerSizes);
+		NeuralNetwork nn = new NeuralNetwork(layerSizes, -10, 10, -5, 5);
 		Layer inputLayer = nn.getInputLayer();
 		Layer[] hiddenLayers = nn.getHiddenLayers();
 		Layer outputLayer = nn.getOutputLayer();
-		
+
 		// Layer Sizes (Number of Nodes)
 		assertEquals(784, inputLayer.getSize());
 		for(Layer layer : hiddenLayers) {

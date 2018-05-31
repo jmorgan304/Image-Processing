@@ -30,13 +30,19 @@ public class Node {
 			this.isInputNode = false;
 		}
 	}
+	
+	public String toString() {
+		return "Node, AV: " + this.activationValue + ", Bias: " + this.bias;
+	}
 
 	public double getActivationValue() {
 		return activationValue;
 	}
 
 	public void setActivationValue(double activationValue) {
-		this.activationValue = activationValue;
+		if(activationValue >= 0.0 && activationValue <= 1.0) {
+			this.activationValue = activationValue;
+		}
 	}
 
 	public double getBias() {
