@@ -1,20 +1,20 @@
 
 public class Node {
-	private float activationValue;
-	private float bias;
+	private double activationValue;
+	private double bias;
 	Edge[] inputEdges;
 	Edge[] outputEdges;
 	private boolean isInputNode;
 	private boolean isOutputNode;
 
-	Node(float activationValue, float bias) {
+	Node(double activationValue, double bias) {
 		this.activationValue = activationValue;
 		this.bias = bias;
 		this.isOutputNode = false;
 		this.isInputNode = false;
 	}
 
-	Node(float activationValue, float bias, Edge[] inputEdges, Edge[] outputEdges) {
+	Node(double activationValue, double bias, Edge[] inputEdges, Edge[] outputEdges) {
 		this.activationValue = activationValue;
 		this.bias = bias;
 		this.inputEdges = inputEdges;
@@ -31,19 +31,19 @@ public class Node {
 		}
 	}
 
-	public float getActivationValue() {
+	public double getActivationValue() {
 		return activationValue;
 	}
 
-	public void setActivationValue(float activationValue) {
+	public void setActivationValue(double activationValue) {
 		this.activationValue = activationValue;
 	}
 
-	public float getBias() {
+	public double getBias() {
 		return bias;
 	}
 
-	public void setBias(float bias) {
+	public void setBias(double bias) {
 		this.bias = bias;
 	}
 

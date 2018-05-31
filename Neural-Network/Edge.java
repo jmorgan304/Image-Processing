@@ -2,9 +2,9 @@
 public class Edge {
 	private Node fromNode;
 	private Node toNode;
-	private float weight;
+	private double weight;
 	
-	Edge(Node fromNode, Node toNode, float weight) {
+	Edge(Node fromNode, Node toNode, double weight) {
 		this.fromNode = fromNode;
 		this.toNode = toNode;
 		this.weight = weight;
@@ -26,11 +26,11 @@ public class Edge {
 		this.toNode = toNode;
 	}
 
-	public float getWeight() {
+	public double getWeight() {
 		return weight;
 	}
 
-	public void setWeight(float weight) {
+	public void setWeight(double weight) {
 		this.weight = weight;
 	}
 	

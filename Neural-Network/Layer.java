@@ -14,10 +14,10 @@ public class Layer {
 		if(nodes != null) {
 			this.size = nodes.length;
 		}
-		if (inputEdges == null) {
+		if (inputEdges == null && outputEdges != null) {
 			this.isInputLayer = true;
 		}
-		else if (outputEdges == null) {
+		else if (outputEdges == null && inputEdges != null) {
 			this.isOutputLayer = true;
 		}
 		else {
@@ -43,8 +43,8 @@ public class Layer {
 
 	public void setInputEdges(Edge[] inputEdges) {
 		this.inputEdges = inputEdges;
-		if (inputEdges != null) {
-			this.isInputLayer = true;
+		if (outputEdges == null && this.inputEdges != null) {
+			this.isOutputLayer = true;
 		}
 	}
 
@@ -54,10 +54,20 @@ public class Layer {
 
 	public void setOutputEdges(Edge[] outputEdges) {
 		this.outputEdges = outputEdges;
-		if (outputEdges != null) {
-			this.isOutputLayer = true;
+		if (inputEdges == null && this.outputEdges != null) {
+			this.isInputLayer = true;
 		}
 	}
 	
+	public int getSize() {
+		return this.size;
+	}
 	
+	public boolean isInputLayer() {
+		return this.isInputLayer;
+	}
+	
+	public boolean isOutputLayer() {
+		return this.isOutputLayer;
+	}
 }
