@@ -2,5 +2,6 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="CSE-564-Project-2"/>
+	<classpathentry kind="src" path="Neural-Network"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
