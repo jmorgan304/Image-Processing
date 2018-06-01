@@ -7,13 +7,17 @@ public class NeuralNetworkTester {
 
 	@Test
 	public void testCreation() {
-		int[] layerSizes = { 1, 4, 4, 1 };
+		int[] layerSizes = { 2, 4, 4, 1 };
 		
-		NeuralNetwork nn = new NeuralNetwork(layerSizes, -10, 10, -5, 5);
+		NeuralNetwork nn = new NeuralNetwork(layerSizes, -1, 1, -1, 1);
 		Layer inputLayer = nn.getInputLayer();
 		Layer[] hiddenLayers = nn.getHiddenLayers();
 		Layer outputLayer = nn.getOutputLayer();
+		
+		double[] testInput = { 0.0, 0.0 };
+		nn.inputValues(testInput);
 		nn.visualize();
+		
 		// Layer Sizes (Number of Nodes)
 		assertEquals(layerSizes[0], inputLayer.getSize());
 		for(int i = 0; i < hiddenLayers.length - 1; i++) {
@@ -25,8 +29,6 @@ public class NeuralNetworkTester {
 		for(Edge[] outputEdges : inputLayer.getOutputEdges()) {
 			assertEquals(layerSizes[1], outputEdges.length);
 		}
-		
-		
 		
 		for(int i = 0; i < hiddenLayers.length - 1; i++) {
 			for(Edge[] inputEdges : hiddenLayers[i].getInputEdges()) {

@@ -20,12 +20,10 @@ public class Layer {
 		String inputEdges = "";
 		if(this.isInputLayer) {
 			inputEdges += "Input Values:\n";
-			for(Edge inputEdge : this.outputEdges[0][0].getToNode().inputEdges) {
-				// For each input edge of the first node of the next layer
-				inputEdges += "\t" + inputEdge.getFromNode().getActivationValue() + "\n";
+			for(Edge[] nodeOutputEdges : this.outputEdges) {
+				inputEdges += "\t" + nodeOutputEdges[0].getFromNode().getActivationValue() + "\n";
 			}
 		}
-		
 		String outputEdges = "Output Edges:\n";
 		if(! this.isOutputLayer) {
 			for(Edge[] nodeEdges : this.outputEdges) {

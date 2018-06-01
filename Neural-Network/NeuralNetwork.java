@@ -7,7 +7,6 @@ public class NeuralNetwork {
 	NeuralNetwork(int[] layerSizes, double minBias, double maxBias, double minWeight, double maxWeight){
 		if(layerSizes.length >= 2) {
 			initAndConnect(layerSizes, minBias, maxBias, minWeight, maxWeight);
-			updateActivationValues();
 		}
 	}
 	
@@ -23,7 +22,7 @@ public class NeuralNetwork {
 				double bias = Math.random() * maxBias + Math.random() * minBias;
 				double activationValue = Math.random();
 				
-				if(j > 0) {
+				if(i > 0) {
 					// All activation values except the inputLayer are based on the previous ones
 					activationValue = -1;
 				}
@@ -71,22 +70,25 @@ public class NeuralNetwork {
 		
 		this.inputLayer = layers[0];
 		layers[0].setIsInputLayer(true);
+		// Set the inputLayer and its value
 		this.hiddenLayers = new Layer[layers.length - 2];
 		for(int i = 1; i < layers.length - 1; i++) {
+			// All but the first and last layers are hidden layers
 			this.hiddenLayers[i - 1] = layers[i];
 		}
 		this.outputLayer = layers[layers.length - 1];
 		layers[layers.length - 1].setIsOutputLayer(true);
+		// Set the outputLayer and its value
 	}
 	
 	private void updateActivationValues() {
 		for(Layer layer : this.hiddenLayers) {
-			setActivationValues(layer);
+			setLayerActivationValues(layer);
 		}
-		setActivationValues(this.outputLayer);
+		setLayerActivationValues(this.outputLayer);
 	}
 	
-	private void setActivationValues(Layer layer) {
+	private void setLayerActivationValues(Layer layer) {
 		if(! layer.isInputLayer()) {
 			// The input layer's activation values are the inputs themselves
 			for(Node node : layer.getNodes()) {
@@ -123,6 +125,38 @@ public class NeuralNetwork {
 		}
 	}
 	
+	public void inputValues(double[] values) {
+		if(values.length != this.inputLayer.getSize()) {
+			System.out.println("The given input is not the correct size, no inputs changed.");
+		}
+		else {
+			for(int i = 0; i < values.length; i++) {
+				this.inputLayer.getNodes()[i].setActivationValue(values[i]);
+				// For each node in the input layer, set the activation value to the corresponding input
+			}
+			updateActivationValues();
+			// Propagate the changes through the network
+		}
+	}
+	
+	public void setOutputValues(double[] values) {
+		if(values.length != this.outputLayer.getSize()) {
+			System.out.println("The given output data is not the correct size, no weights/biases changed.");
+		}
+		else {
+			for(int i = 0; i < values.length; i++) {
+				this.outputLayer.getNodes()[i].setActivationValue(values[i]);
+				// For each node in the output layer, set the activation value to the corresponding input
+			}
+			backPropagate();
+			// Propagate the changes through the network
+		}
+	}
+	
+	private void backPropagate() {
+		
+	}
+	
 	private double sigmoid(double x) {
 		// sigmoid(x) = 1 / (1 + e^(-x))
 		double denominator = 1.0d + Math.pow(Math.E, (-x));
@@ -132,10 +166,12 @@ public class NeuralNetwork {
 	public void visualize() {
 		System.out.println("----Input Layer----");
 		System.out.println(this.inputLayer.toString());
+		
 		for(int i = 0; i < this.hiddenLayers.length; i++) {
 			System.out.println("----Hidden Layer " + (i + 1) + "/" + this.hiddenLayers.length + "----");
 			System.out.println(this.hiddenLayers[i].toString());
 		}
+		
 		System.out.println("----Output Layer----");
 		System.out.println(this.outputLayer.toString());
 	}
