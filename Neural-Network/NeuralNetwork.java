@@ -7,6 +7,7 @@ public class NeuralNetwork {
 	NeuralNetwork(int[] layerSizes, double minBias, double maxBias, double minWeight, double maxWeight){
 		if(layerSizes.length >= 2) {
 			initAndConnect(layerSizes, minBias, maxBias, minWeight, maxWeight);
+			updateZValues();
 		}
 	}
 	
@@ -81,6 +82,23 @@ public class NeuralNetwork {
 		// Set the outputLayer and its value
 	}
 	
+	private void updateZValues() {
+		Layer previousLayer = this.inputLayer;
+		for(int i = 0; i < this.hiddenLayers.length; i++) {
+			// For each of the hidden layers, set the z values starting with the first one as current and updating to step through
+			Layer currentLayer = this.hiddenLayers[i];
+			setZValuesForLayer(previousLayer, currentLayer);
+			previousLayer = currentLayer;
+		}
+		if(this.hiddenLayers.length == 0) {
+			// If there are no hidden layers
+			setZValuesForLayer(this.inputLayer, this.outputLayer);
+		}
+		else {
+			setZValuesForLayer(previousLayer, this.outputLayer);
+		}
+	}
+	
 	private void updateActivationValues() {
 		for(Layer layer : this.hiddenLayers) {
 			setLayerActivationValues(layer);
@@ -135,6 +153,7 @@ public class NeuralNetwork {
 				// For each node in the input layer, set the activation value to the corresponding input
 			}
 			updateActivationValues();
+			updateZValues();
 			// Propagate the changes through the network
 		}
 	}
@@ -153,8 +172,88 @@ public class NeuralNetwork {
 		}
 	}
 	
+	private double costValue(double[] correctOutput) {
+		if(correctOutput.length != this.outputLayer.getSize()) {
+			System.out.println("The given output data is not the correct size, no weights/biases changed.");
+			return Double.MAX_VALUE;
+		}
+		else {
+			double sumOfSquaredErrors = 0.0;
+			for(int i = 0; i < correctOutput.length; i++) {
+				sumOfSquaredErrors += Math.pow((this.outputLayer.getNodes()[i].getActivationValue() - correctOutput[i]), 2);
+			}
+			return sumOfSquaredErrors;
+		}
+	}
+	
 	private void backPropagate() {
 		
+	}
+	
+	private void setZValuesForLayer(Layer previousLayer, Layer currentLayer) {
+		// z = sum of ((weights of edges between previous and current layer) * (activation values of previous layer) + biases of current layer)
+		if(previousLayer.isInputLayer()) {
+			// Z values are directly determinable
+			// Base Case
+			double[] zValues = new double[currentLayer.getSize()];
+			// Each node's activation value has a corresponding z value
+			double[] previousActivations = previousLayer.getActivationValues();
+			// The activation values of the nodes in the previous layer
+			
+			for(int i = 0; i < currentLayer.getSize(); i++) {
+				// For each node in the current layer, get the weights, and its bias to calculate z
+				double[] weights = previousLayer.getOutputWeights()[i];
+				// The weights from the node in the current layer going back to the previous layer
+				double bias = currentLayer.getNodes()[i].getBias();
+				// The bias for the current node in the current layer
+				double zValue = calcZValue(previousActivations, weights, bias);
+				zValues[i] = zValue;
+			}
+			currentLayer.setzValues(zValues);
+			// Set the Z values for the current layer			
+		}
+		else if(previousLayer.getzValues() != null) {
+			// The previousLayer's z values are known
+			double[] previousZValues = previousLayer.getzValues();
+			double[] previousActivations = new double[previousLayer.getSize()];
+			
+			for(int i = 0; i < previousActivations.length; i++) {
+				// For each of the previous layer z values, find previous activation = sigmoid(previous layer z value)
+				previousActivations[i] = sigmoid(previousZValues[i]);
+			}
+			
+			double[] zValues = new double[currentLayer.getSize()];
+			// Each node's activation value has a corresponding z value
+			
+			for(int i = 0; i < currentLayer.getSize(); i++) {
+				// For each node in the current layer, get the weights, and its bias to calculate z
+				double[] weights = previousLayer.getOutputWeights()[i];
+				// The weights from the node in the current layer going back to the previous layer
+				double bias = currentLayer.getNodes()[i].getBias();
+				// The bias for the current node in the current layer
+				double zValue = calcZValue(previousActivations, weights, bias);
+				zValues[i] = zValue;
+			}
+			currentLayer.setzValues(zValues);
+			// Set the Z values for the current layer
+		}
+		else {
+			// The previous layer doesnt have z values and its not the input layer
+			// Should be used starting with input layer to avoid recursive calls but here as a failsafe
+			System.out.println("Youre doing it wrong.");
+		}
+	}
+	
+	private double calcZValue(double[] previousActivations, double[] weights, double bias) {
+		double zValue = 0.0;
+		
+		for(int j = 0; j < weights.length; j++) {
+			// The dot product of the weights and previous activations
+			zValue += weights[j] * previousActivations[j];
+		}
+		zValue += bias;
+		// Add the bias as well
+		return zValue;
 	}
 	
 	private double sigmoid(double x) {

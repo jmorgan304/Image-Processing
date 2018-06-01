@@ -3,6 +3,10 @@ public class Layer {
 	private Node[] nodes;
 	private Edge[][] inputEdges;
 	private Edge[][] outputEdges;
+	private double[] zValues;
+	private double[][] outputWeights;
+	private double[] activationValues;
+	private double[] biases;
 	private int size;
 	private boolean isInputLayer;
 	private boolean isOutputLayer;
@@ -50,6 +54,17 @@ public class Layer {
 		this.nodes = nodes;
 		if(nodes != null) {
 			this.size = nodes.length;
+			double[] biases = new double[nodes.length];
+			double[] activationValues = new double[nodes.length];
+			for(int i = 0; i < nodes.length; i++) {
+				biases[i] = nodes[i].getBias();
+				activationValues[i] = nodes[i].getActivationValue();
+			}
+			this.activationValues = activationValues;
+			this.biases = biases;
+		}
+		else {
+			this.size = 0;
 		}
 	}
 
@@ -70,9 +85,15 @@ public class Layer {
 
 	public void setOutputEdges(Edge[][] outputEdges) {
 		this.outputEdges = outputEdges;
-//		if (inputEdges == null && this.outputEdges != null) {
-//			this.isInputLayer = true;
-//		}
+		double[][] outputWeights = new double[outputEdges.length][outputEdges[0].length];
+		
+		for(int i = 0; i < outputEdges.length; i++) {
+			for(int j = 0; j < outputEdges[i].length; i++) {
+				outputWeights[i][j] = outputEdges[i][j].getWeight();
+				// Set the outputWeights to the weights of the output edges
+			}
+		}
+		this.outputWeights = outputWeights;
 	}
 	
 	public int getSize() {
@@ -100,4 +121,28 @@ public class Layer {
 			this.outputEdges = null;
 		}
 	}
+
+	public double[] getzValues() {
+		return zValues;
+	}
+
+	public void setzValues(double[] zValues) {
+		this.zValues = zValues;
+	}
+
+	public double[][] getOutputWeights() {
+		return outputWeights;
+	}
+
+
+	public double[] getBiases() {
+		return biases;
+	}
+
+	public double[] getActivationValues() {
+		return activationValues;
+	}
+
+	
+	
 }
