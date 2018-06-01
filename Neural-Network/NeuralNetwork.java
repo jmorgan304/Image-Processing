@@ -37,23 +37,36 @@ public class NeuralNetwork {
 			// For each layer except the last one, connect its output nodes to the next layer
 			Layer layer1 = layers[i];
 			Layer layer2 = layers[i + 1];
+			Edge[][] layerOutputEdges = new Edge[layer1.getSize()][layer2.getSize()];
+			// Each node in the layer has an array of in and output edges
 			
-			for(Node fromNode : layer1.getNodes()) {
+			for(int j = 0; j < layer1.getSize(); j++) {
 				// For each node in layer1 generate its output edges and connect them to layer2 as input edges
-				Edge[] outputEdges = new Edge[layer2.getSize()];
+				Node fromNode = layer1.getNodes()[j];
+				Edge[] fromNodeOutputEdges = new Edge[layer2.getSize()];
 				
-				for(int j = 0; j < layer2.getSize(); j++) {
+				for(int k = 0; k < layer2.getSize(); k++) {
 					// Create the edges from each individual fromNode to every toNode
-					Node toNode = layer2.getNodes()[j];
+					Node toNode = layer2.getNodes()[k];
 					
 					double weight = Math.random() * maxWeight + Math.random() * minWeight;
 					Edge outputEdge = new Edge(fromNode, toNode, weight);
-					outputEdges[j] = outputEdge;
+					fromNodeOutputEdges[k] = outputEdge;
+					// Put the individual output edge into the set of output edges for the from node
 				}
-				layer1.setOutputEdges(outputEdges);
-				layer2.setInputEdges(outputEdges);
-				// The output edges for layer1 are layer2's input edges
+				fromNode.setOutputEdges(fromNodeOutputEdges);
+				// Set the output edges for the individual fromNode
+				for(Edge outputEdge : fromNodeOutputEdges) {
+					// For each edge in the output edges of the fromNode, set the edge's toNode inputs to the fromNode's outputs
+					Node toNode = outputEdge.getToNode();
+					toNode.setInputEdges(fromNodeOutputEdges);
+				}
+				layerOutputEdges[j] = fromNodeOutputEdges;
+				// Set the output edges for the fromNode in the layer
 			}
+			layer1.setOutputEdges(layerOutputEdges);
+			layer2.setInputEdges(layerOutputEdges);
+			// The output edges for layer1 are layer2's input edges
 		}
 		
 		this.inputLayer = layers[0];

@@ -7,30 +7,39 @@ public class NeuralNetworkTester {
 
 	@Test
 	public void testCreation() {
-		int[] layerSizes = { 784, 16, 16, 10 };
+		int[] layerSizes = { 1, 4, 4, 1 };
 		
 		NeuralNetwork nn = new NeuralNetwork(layerSizes, -10, 10, -5, 5);
 		Layer inputLayer = nn.getInputLayer();
 		Layer[] hiddenLayers = nn.getHiddenLayers();
 		Layer outputLayer = nn.getOutputLayer();
-
+		nn.visualize();
 		// Layer Sizes (Number of Nodes)
-		assertEquals(784, inputLayer.getSize());
-		for(Layer layer : hiddenLayers) {
-			assertEquals(16, layer.getSize());
+		assertEquals(layerSizes[0], inputLayer.getSize());
+		for(int i = 0; i < hiddenLayers.length - 1; i++) {
+			assertEquals(layerSizes[i + 1], hiddenLayers[i].getSize());
 		}
-		assertEquals(10, outputLayer.getSize());
+		assertEquals(layerSizes[layerSizes.length - 1], outputLayer.getSize());
 		
 		// Edge Sizes (Connections to and from each layer)
-		assertEquals(16, inputLayer.getOutputEdges().length);
+		for(Edge[] outputEdges : inputLayer.getOutputEdges()) {
+			assertEquals(layerSizes[1], outputEdges.length);
+		}
 		
-		assertEquals(16, hiddenLayers[0].getInputEdges().length);
-		assertEquals(16, hiddenLayers[0].getOutputEdges().length);
 		
-		assertEquals(16, hiddenLayers[1].getInputEdges().length);
-		assertEquals(10, hiddenLayers[1].getOutputEdges().length);
 		
-		assertEquals(10, outputLayer.getInputEdges().length);
+		for(int i = 0; i < hiddenLayers.length - 1; i++) {
+			for(Edge[] inputEdges : hiddenLayers[i].getInputEdges()) {
+				assertEquals(layerSizes[i + 1], inputEdges.length);
+			}
+			for(Edge[] outputEdges : hiddenLayers[i].getOutputEdges()) {
+				assertEquals(layerSizes[i + 1], outputEdges.length);
+			}
+		}
+		
+		for(Edge[] inputEdges : outputLayer.getInputEdges()) {
+			assertEquals(layerSizes[layerSizes.length - 1], inputEdges.length);
+		}
 		
 		// Input and Output Layer validation
 		assertTrue(inputLayer.isInputLayer());

@@ -1,13 +1,13 @@
 
 public class Layer {
 	private Node[] nodes;
-	private Edge[] inputEdges;
-	private Edge[] outputEdges;
+	private Edge[][] inputEdges;
+	private Edge[][] outputEdges;
 	private int size;
 	private boolean isInputLayer;
 	private boolean isOutputLayer;
 	
-	Layer(Node[] nodes, Edge[] inputEdges, Edge[] outputEdges){
+	Layer(Node[] nodes, Edge[][] inputEdges, Edge[][] outputEdges){
 		this.nodes = nodes;
 		this.inputEdges = inputEdges;
 		this.outputEdges = outputEdges;
@@ -17,17 +17,27 @@ public class Layer {
 	}
 	
 	public String toString() {
-		String inputEdges = "Input Edges:\n";
-		if(! this.isInputLayer) {
-			for(Edge inputEdge : this.inputEdges) {
-				inputEdges += "\t" + inputEdge.toString() + "\n";
+		String inputEdges = "";
+		if(this.isInputLayer) {
+			inputEdges += "Input Values:\n";
+			for(Edge inputEdge : this.outputEdges[0][0].getToNode().inputEdges) {
+				// For each input edge of the first node of the next layer
+				inputEdges += "\t" + inputEdge.getFromNode().getActivationValue() + "\n";
 			}
 		}
 		
 		String outputEdges = "Output Edges:\n";
 		if(! this.isOutputLayer) {
-			for(Edge outputEdge : this.outputEdges) {
-				outputEdges += "\t" + outputEdge.toString() + "\n";
+			for(Edge[] nodeEdges : this.outputEdges) {
+				for(Edge outputEdge : nodeEdges) {
+					outputEdges += "\t" + outputEdge.toString() + "\n";
+				}
+			}
+		}
+		else {
+			outputEdges = "Output Values:\n";
+			for(Node outputNode : this.nodes) {
+				outputEdges += "\t" + outputNode.getActivationValue() + "\n";
 			}
 		}
 		
@@ -45,22 +55,22 @@ public class Layer {
 		}
 	}
 
-	public Edge[] getInputEdges() {
+	public Edge[][] getInputEdges() {
 		return inputEdges;
 	}
 
-	public void setInputEdges(Edge[] inputEdges) {
+	public void setInputEdges(Edge[][] inputEdges) {
 		this.inputEdges = inputEdges;
 //		if (outputEdges == null && this.inputEdges != null) {
 //			this.isOutputLayer = true;
 //		}
 	}
 
-	public Edge[] getOutputEdges() {
+	public Edge[][] getOutputEdges() {
 		return outputEdges;
 	}
 
-	public void setOutputEdges(Edge[] outputEdges) {
+	public void setOutputEdges(Edge[][] outputEdges) {
 		this.outputEdges = outputEdges;
 //		if (inputEdges == null && this.outputEdges != null) {
 //			this.isInputLayer = true;
