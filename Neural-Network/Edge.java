@@ -3,13 +3,13 @@ public class Edge {
 	private Node fromNode;
 	private Node toNode;
 	private double weight;
-	
+
 	Edge(Node fromNode, Node toNode, double weight) {
 		this.fromNode = fromNode;
 		this.toNode = toNode;
 		this.weight = weight;
 	}
-	
+
 	public String toString() {
 		String fromString = fromNode.toString();
 		String toString = toNode.toString();
@@ -39,6 +39,5 @@ public class Edge {
 	public void setWeight(double weight) {
 		this.weight = weight;
 	}
-	
-	
+
 }
