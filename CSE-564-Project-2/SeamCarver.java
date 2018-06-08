@@ -1,11 +1,11 @@
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class SeamCarver {
 
-	static int[] find_seam(ImageData img){
+	static int[] find_seam(float[] energy, ImageData img){
 		int height = img.getHeight() - 2;
 		int width = img.getWidth() - 2;
-		float[] energy = EdgeDetector.dual_gradient_energy(img);
 		System.out.println(energy.length);
 		// Due to cropping for the convolutions
 		int[] minSeam = new int[height];
@@ -95,13 +95,27 @@ public class SeamCarver {
 	
 	public static void main(String[] args) {
 		// Original, Energy, Seam, No Seam
-		ImageData img1 = new ImageData("TestImage2.PNG");
-		//int[] seam = find_seam(img1);
-		BufferedImage energyMap = EdgeDetector.getEnergyMap(img1);
-		// These can be uncommented for each view, the windows tend to overlap when created all at once
-		new ImageDisplay(energyMap);
-		//new ImageDisplay(plot_seam(img1, seam).img);
-		//new ImageDisplay(remove_seam(img1, seam, true).img);
+		try {
+			ImageData img1 = new ImageData("TestImage2.PNG");
+
+			// Sobel operator:
+			// Gx = {1, 0 -1, 2, 0, 2, 1, 0, -1} Gy = {1, 2, 1, 0, 0, 0, -1, -2, -1}
+			Integer[] gx = { 1, 0 - 1, 2, 0, -2, 1, 0, -1 };
+			Integer[] gy = { 1, 2, 1, 0, 0, 0, -1, -2, -1 };
+			Kernel horizontal = new Kernel<Integer>(gx, 3);
+			Kernel vertical = new Kernel<Integer>(gy, 3);
+			
+			EdgeDetector test = new EdgeDetector(img1, horizontal, vertical);
+			BufferedImage energyMap = test.getEnergyMap();
+			//int[] seam = find_seam(test.getDualGradientEnergy(), img1);
+			// These can be uncommented for each view, the windows tend to overlap when created all at once
+			new ImageDisplay(energyMap);
+			//new ImageDisplay(plot_seam(img1, seam).img);
+			//new ImageDisplay(remove_seam(img1, seam, true).img);
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
 		
 	}
 }
