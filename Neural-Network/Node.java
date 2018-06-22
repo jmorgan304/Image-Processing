@@ -1,59 +1,30 @@
-
 public class Node {
-	private double activationValue;
-	private double bias;
 	private Edge[] inputEdges;
 	private Edge[] outputEdges;
-	private boolean isInputNode;
-	private boolean isOutputNode;
+	private double activationValue;
+	private double bias;
+	private ActivationFunction activationFunction;
 
-	Node(double activationValue, double bias, boolean isInputNode) {
+	public Node(double activationValue, double bias, ActivationFunction activationFunction) {
 		this.activationValue = activationValue;
 		this.bias = bias;
-		this.isOutputNode = false;
-		this.isInputNode = isInputNode;
+		this.activationFunction = activationFunction;
 	}
 
-	Node(double activationValue, double bias, Edge[] inputEdges, Edge[] outputEdges) {
-		this.activationValue = activationValue;
-		this.bias = bias;
-		this.inputEdges = inputEdges;
-		this.outputEdges = outputEdges;
-		if (inputEdges == null) {
-			this.isInputNode = true;
-		} else if (outputEdges == null) {
-			this.isOutputNode = true;
-		} else {
-			this.isOutputNode = false;
-			this.isInputNode = false;
+	public double calcZvalue() {
+		if (this.inputEdges == null) {
+			// If this is an input node, return the activation/input value
+			return this.activationValue;
 		}
-	}
+		// (sum of (weights * previous activation values)) + bias
+		double weightedSum = 0.0f;
 
-	public String toString() {
-		return "Node, AV: " + this.activationValue + ", Bias: " + this.bias;
-	}
-
-	public double getActivationValue() {
-		return activationValue;
-	}
-
-	public void setActivationValue(double activationValue) {
-		if (activationValue >= 0.0 && activationValue <= 1.0) {
-			this.activationValue = activationValue;
+		for (Edge inputEdge : this.inputEdges) {
+			weightedSum += inputEdge.getWeight() * inputEdge.getFromNode().getActivationValue();
 		}
-	}
+		weightedSum += this.bias;
 
-	public double getBias() {
-		return bias;
-	}
-
-	public void setBias(double bias) {
-		if(this.isInputNode) {
-			this.bias = 0;
-		}
-		else {
-			this.bias = bias;
-		}
+		return weightedSum;
 	}
 
 	public Edge[] getInputEdges() {
@@ -72,28 +43,28 @@ public class Node {
 		this.outputEdges = outputEdges;
 	}
 
-	public boolean isInputNode() {
-		return isInputNode;
+	public double getActivationValue() {
+		return activationValue;
 	}
 
-	public void setInputNode(boolean isInputNode) {
-		this.isInputNode = isInputNode;
+	public void setActivationValue(double activationValue) {
+		this.activationValue = activationValue;
 	}
 
-	public boolean isOutputNode() {
-		return isOutputNode;
+	public double getBias() {
+		return bias;
 	}
 
-	public void setOutputNode(boolean isOutputNode) {
-		this.isOutputNode = isOutputNode;
+	public void setBias(double bias) {
+		this.bias = bias;
 	}
-	
-	public double[] getInputWeights() {
-		double[] inputWeights = new double[this.inputEdges.length];
-		for(int i = 0; i < inputEdges.length; i++) {
-			inputWeights[i] = this.inputEdges[i].getWeight();
-		}
-		return inputWeights;
+
+	public ActivationFunction getActivationFunction() {
+		return activationFunction;
+	}
+
+	public void setActivationFunction(ActivationFunction activationFunction) {
+		this.activationFunction = activationFunction;
 	}
 
 }

@@ -100,16 +100,26 @@ public class SeamCarver {
 
 			// Sobel operator:
 			// Gx = {1, 0 -1, 2, 0, 2, 1, 0, -1} Gy = {1, 2, 1, 0, 0, 0, -1, -2, -1}
-			Integer[] gx = { 1, 0 - 1, 2, 0, -2, 1, 0, -1 };
-			Integer[] gy = { 1, 2, 1, 0, 0, 0, -1, -2, -1 };
-			Kernel horizontal = new Kernel<Integer>(gx, 3);
-			Kernel vertical = new Kernel<Integer>(gy, 3);
+			Integer[] gx1 = { 1, 0 - 1, 2, 0, -2, 1, 0, -1 };
+			Integer[] gy1 = { 1, 2, 1, 0, 0, 0, -1, -2, -1 };
+			Integer[] gx2 = { -1, -1, -1, -1, 8, -1, -1, -1, -1 };
+			Integer[] gy2 = { -1, -1, -1, -1, 8, -1, -1, -1, -1 };
+			Kernel horizontal1 = new Kernel<Integer>(gx1, 3);
+			Kernel vertical1 = new Kernel<Integer>(gy1, 3);
+			Kernel horizontal2 = new Kernel<Integer>(gx2, 3);
+			Kernel vertical2 = new Kernel<Integer>(gy2, 3);
 			
-			EdgeDetector test = new EdgeDetector(img1, horizontal, vertical);
-			BufferedImage energyMap = test.getEnergyMap();
+			
+			
+			EdgeDetector test1 = new EdgeDetector(img1, horizontal1, vertical1);
+			BufferedImage energyMap1 = test1.getEnergyMap();
+			EdgeDetector test2 = new EdgeDetector(img1, horizontal2, vertical2);
+			BufferedImage energyMap2 = test2.getEnergyMap();
+			
 			//int[] seam = find_seam(test.getDualGradientEnergy(), img1);
 			// These can be uncommented for each view, the windows tend to overlap when created all at once
-			new ImageDisplay(energyMap);
+			new ImageDisplay(energyMap1);
+			new ImageDisplay(energyMap2);
 			//new ImageDisplay(plot_seam(img1, seam).img);
 			//new ImageDisplay(remove_seam(img1, seam, true).img);
 		}

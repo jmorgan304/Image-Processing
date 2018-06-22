@@ -4,16 +4,10 @@ public class Edge {
 	private Node toNode;
 	private double weight;
 
-	Edge(Node fromNode, Node toNode, double weight) {
+	public Edge(Node fromNode, Node toNode, double weight) {
 		this.fromNode = fromNode;
 		this.toNode = toNode;
 		this.weight = weight;
-	}
-
-	public String toString() {
-		String fromString = fromNode.toString();
-		String toString = toNode.toString();
-		return "Edge, From: " + fromString + " To: " + toString + " Weight: " + this.weight;
 	}
 
 	public Node getFromNode() {

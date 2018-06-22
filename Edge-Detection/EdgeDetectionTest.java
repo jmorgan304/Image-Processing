@@ -42,8 +42,10 @@ public class EdgeDetectionTest {
 			ImageData imgData = new ImageData("TestImage1.PNG");
 			// Sobel operator:
 			// Gx = {1, 0 -1, 2, 0, 2, 1, 0, -1} Gy = {1, 2, 1, 0, 0, 0, -1, -2, -1}
-			Integer[] gx = { 1, 0 - 1, 2, 0, -2, 1, 0, -1 };
-			Integer[] gy = { 1, 2, 1, 0, 0, 0, -1, -2, -1 };
+			//Integer[] gx = { 1, 0 - 1, 2, 0, -2, 1, 0, -1 };
+			//Integer[] gy = { 1, 2, 1, 0, 0, 0, -1, -2, -1 };
+			Integer[] gx = { -1, -1, -1, -1, 8, -1, -1, -1, -1 };
+			Integer[] gy = { -1, -1, -1, -1, 8, -1, -1, -1, -1 };
 			Kernel horizontal = new Kernel<Integer>(gx, 3);
 			Kernel vertical = new Kernel<Integer>(gy, 3);
 			
