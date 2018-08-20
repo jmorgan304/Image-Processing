@@ -13,6 +13,17 @@ public enum LossFunction {
 		}
 	}
 
+	public double derivative(double predicted, double actual) {
+		switch (this) {
+		case SSE:
+			return sseDerivative(predicted, actual);
+		case LOGLOSS:
+			return logLossDerivative(predicted, actual);
+		default:
+			return Double.NEGATIVE_INFINITY;
+		}
+	}
+
 	private static double sse(double predicted, double actual) {
 		return Math.pow((predicted - actual), 2);
 	}
@@ -25,7 +36,7 @@ public enum LossFunction {
 		return (-actual * Math.log(predicted)) - (1 - actual) * (Math.log((1 - predicted)));
 	}
 
-	// public static double logLossDerivative(double predicted, double actual) {
-	//
-	// }
+	public static double logLossDerivative(double predicted, double actual) {
+		return Double.NEGATIVE_INFINITY;
+	}
 }

@@ -12,7 +12,7 @@ public class NeuralNetworkTest {
 		LossFunction loss = LossFunction.SSE;
 		Regularization reg = Regularization.NONE;
 
-		NeuralNetwork nn = new NeuralNetwork(layerSizes, functions, loss, reg);
+		NeuralNetwork nn = new NeuralNetwork(layerSizes, .01, functions, loss, reg);
 		assertTrue(nn.getLossFunction() == loss);
 		assertTrue(nn.getRegularization() == reg);
 
@@ -73,7 +73,7 @@ public class NeuralNetworkTest {
 		LossFunction loss = LossFunction.SSE;
 		Regularization reg = Regularization.NONE;
 
-		NeuralNetwork nn = new NeuralNetwork(layerSizes, functions, loss, reg, 1.0, 1.0, 1.0, 1.0);
+		NeuralNetwork nn = new NeuralNetwork(layerSizes, .01, functions, loss, reg, 1.0, 1.0, 1.0, 1.0);
 		// All weights and biases should be 1.0
 
 		double[] input = { 1.0, 2.0, 3.0 };
@@ -83,22 +83,47 @@ public class NeuralNetworkTest {
 		Node[][] layers = nn.getLayers();
 
 		for (int i = 0; i < input.length; i++) {
-			assertEquals(input[i], layers[0][i].getActivationValue(), Double.MIN_VALUE);
+			assertEquals(input[i], layers[0][i].getActivationValue(), .0000001);
 			// Input layer
 		}
 		for (int i = 0; i < 3; i++) {
 			double weightedSum = 1.0 * 1.0 + 1.0 * 2.0 + 3.0 * 1.0;
 			double z = weightedSum + 1.0;
-			double activationValue = relu.apply(z);
+			double activationValue = relu.apply(z, null);
 
-			assertEquals(activationValue, layers[1][i].getActivationValue(), Double.MIN_VALUE);
+			assertEquals(activationValue, layers[1][i].getActivationValue(), .0000001);
 			// Single hidden layer with relu activation
 		}
 		double outputWeightedSum = 6.0 * 1.0 + 6.0 * 1.0 + 6.0 * 1.0;
 		double outputZ = outputWeightedSum + 1.0;
-		double outputActivationValue = sigmoid.apply(outputZ);
+		double outputActivationValue = sigmoid.apply(outputZ, null);
 
-		assertEquals(outputActivationValue, layers[2][0].getActivationValue(), Double.MIN_VALUE);
+		assertEquals(outputActivationValue, layers[2][0].getActivationValue(), .0000001);
+	}
+
+	@Test
+	public void testBackProp() {
+		int[] layerSizes = { 3, 3, 2 };
+		ActivationFunction relu = ActivationFunction.RELU;
+		ActivationFunction sigmoid = ActivationFunction.SIGMOID;
+
+		ActivationFunction[] functions = { ActivationFunction.NONE, relu, sigmoid };
+		LossFunction loss = LossFunction.SSE;
+		Regularization reg = Regularization.NONE;
+
+		NeuralNetwork nn = new NeuralNetwork(layerSizes, .01, functions, loss, reg, -.1, .1, -1, 1);
+
+		double[] input = { 1.0, -2.0, 3.0 };
+		double[] observations = { 0.0, 1.0 };
+
+		for (int i = 0; i < 1000001; i++) {
+			if (i % 100000 == 0) {
+				nn.input(input);
+				nn.printWeights();
+				nn.updateWeights(observations);
+				nn.printWeights();
+			}
+		}
 
 	}
 }
